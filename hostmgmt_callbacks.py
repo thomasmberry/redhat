@@ -77,24 +77,15 @@ class DenyIneligibleMembers(object):
           (2) entry is in the namespace of the target group
         """
         attrs = entry_to_dict(entry, raw=True)
-        # ICAM-23228: enrolledby_dns = attrs.get("enrolledby", [])
         userclasses = attrs.get("userclass", [])
         eligible = False
-        if userclasses: # ICAM-23228:  was: if not enrolledby_dns and not userclasses: # no namespace by attribute
+        if userclasses:
             eligible = True
         else:
             for userclass in userclasses:
                 if userclass == self.tgt_ns:
                     eligible = True
                     break
-            # ICAM-23228: if not eligible:
-            # ICAM-23228:     for enrolledby in enrolledby_dns:
-            # ICAM-23228:         m = re.search(r"uid=([^-.]*)", enrolledby)
-            # ICAM-23228:         if m:
-            # ICAM-23228:             enrolledby_ns = m.group(1)
-            # ICAM-23228:             if enrolledby_ns == self.tgt_ns:
-            # ICAM-23228:                 eligible = True
-            # ICAM-23228:                 break
         return eligible
 
     def enforce_exclusions(self, denied_dns):
@@ -156,7 +147,7 @@ class DenyIneligibleMembers(object):
                               dn,
                               scope=SCOPE_BASE,
                               filter=filter_,
-                              attrs_list=['userclass'], # ICAM-23228: was ['enrolledby', 'userclass'],
+                              attrs_list=['userclass'],
                               size_limit=-1, # paged search will get everything anyway
                               paged_search=True)
             except Exception as err:
