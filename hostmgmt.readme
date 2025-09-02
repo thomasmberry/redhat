@@ -1,2 +1,5 @@
 hostmgmt_callbacks.py plugin is now available
 - enrolledby is no longer an attribute used to associate hosts with a namespace; host-namespace enforcement now relies entirely on userclass
+
+test_hostmgmt_callbacks.py
+- script to test callbacks plugin
