@@ -1,3 +1,5 @@
+ATTENTION: Working on bug with namespace host management; the enforcement is overzealous.
+
 hostmgmt_callbacks.py plugin is now available
 - enrolledby is no longer an attribute used to associate hosts with a namespace; host-namespace enforcement now relies entirely on userclass
 - userclass (class) is used to identify a host with a namespace
