@@ -1,3 +1,5 @@
+__version__ = "1.0.0"
+
 import logging
 import re
 
@@ -22,11 +24,13 @@ class DenyIneligibleMembers(object):
     for this filtering is encapsulated within this class (DenyIneligibleMembers).
 
     Essentially, the code ensures that if a target group or rule belongs to a
-    specific namespace (e.g., 'namespace.hostgroup'), only members from that same
-    namespace are permitted. 
+    specific namespace (e.g., 'jpl.hostgroup'), only members from that same
+    namespace are permitted. Exceptions are made for certain hostnames (starting
+    with 'icam' or 'ips') and for hostgroups whose names match the target's
+    namespace.
     """
 
-    log_prefix = "namespace.DenyIneligibleMembers -"
+    log_prefix = "jpl.DenyIneligibleMembers -"
 
     def __init__(self, ldap, tgt_dn, cands, rejects):
         assert isinstance(tgt_dn, DN)
@@ -43,8 +47,9 @@ class DenyIneligibleMembers(object):
             for cand_dn in self.cand_hosts + self.cand_hostgroups:
                 assert isinstance(cand_dn, DN)
                 cand_name, attr = self.parse_dn(cand_dn)
-                if not (self.exempt_from_namespace_policies(cand_name) \
-                   or (self.exclude_by_hostgroup_name(cand_dn) and self.exclude_by_attr(cand_dn))):
+                if self.exempt_from_namespace_policies(cand_name):
+                    continue
+                if self.exclude_by_hostgroup_name(cand_dn) or self.exclude_by_userclass(cand_dn):
                     denied_dns.append(cand_dn)
             self.enforce_exclusions(denied_dns)
         else:
@@ -52,12 +57,10 @@ class DenyIneligibleMembers(object):
 
     def exempt_from_namespace_policies(self, cand_name):
         """
-        Hosts with names starting with this or that are exempt from namespace
-        policies.
-
-        return True if re.search(r"^(this|that)", cand_name) else False
+        Hosts with names starting with 'icam' or 'ips' are exempt from
+        namespace policies. At some point the 'ips' exemption may be revoked.
         """
-        return False
+        return True if re.search(r"^(icam|ips)", cand_name) else False
 
     def is_hostgroup_candidate(self, cand_dn):
         return True if cand_dn in self.cand_hostgroups else False
@@ -75,20 +78,20 @@ class DenyIneligibleMembers(object):
             return True # hostgroup excluded because not in target namespace
         return False # not excluded here because not a hostgroup
 
-    def exclude_by_attr(self, cand_dn):
+    def exclude_by_userclass(self, cand_dn):
         """
         Denies members unless they are eligible, as determined by their LDAP
         attributes.
         """
         entry = self.get_candidate_entry(cand_dn)
         if entry is not None:
-            eligible = self.is_eligible_based_on_attrs(entry)
+            eligible = self.is_eligible_based_on_userclass(entry)
             return not eligible
         else:
             logging.info(f"{self.lprefix} {cand_dn} excluded because entry not found")
             return True
 
-    def is_eligible_based_on_attrs(self, entry):
+    def is_eligible_based_on_userclass(self, entry):
         """
         An host or hostgroup entry is eligible for membership if it either has
         no userclass attribute or its userclass matches the target group's
@@ -97,7 +100,7 @@ class DenyIneligibleMembers(object):
         attrs = entry_to_dict(entry, raw=True)
         userclasses = attrs.get("userclass", [])
         eligible = False
-        if not userclasses:
+        if not userclasses: # no namespace by attribute
             eligible = True
         else:
             for userclass in userclasses:
@@ -119,7 +122,9 @@ class DenyIneligibleMembers(object):
                 self.cand_hostgroups.remove(dn)
             for denied_dn in denied_dns: # provide caller with ineligible candidates
                 if denied_dn in self.cand_hosts:
-                    if not tgt_is_sudorule: # this is here to avoid an error downstream in ipaserver.plugins.baseldap.add_external_post_callback()
+                    # this is here to avoid an error downstream in
+                    # ipaserver.plugins.baseldap.add_external_post_callback()
+                    if not tgt_is_sudorule:
                         self.reject_hosts.append(denied_dn)
                 if denied_dn in self.cand_hostgroups:
                     self.reject_hostgroups.append(denied_dn)
@@ -159,8 +164,7 @@ class DenyIneligibleMembers(object):
         assert isinstance(dn, DN)
         cand_name, attr = self.parse_dn(dn)
         if attr is not None:
-            filter_ = self.ldap.make_filter_from_attr(attr, cand_name,
-                                                      self.ldap.MATCH_ALL)
+            filter_ = self.ldap.make_filter_from_attr(attr, cand_name, self.ldap.MATCH_ALL)
             try:
                 results = self.ldap.get_entries(
                               dn,
@@ -171,7 +175,7 @@ class DenyIneligibleMembers(object):
                               paged_search=True)
             except Exception as err:
                 if err:
-                    logging.warning(f"{self.lprefix} SEARCH EXCEPTION: {err}")
+                    logging.warning(f"{self.lprefix} SEARCH EXCEPTION: '{type(err)}'='{err}'")
                 logging.warning(f"{self.lprefix} canidate {dn} not found")
                 results = []
             if len(results):
@@ -204,8 +208,7 @@ class DenyIneligibleMembers(object):
             attr, name = (m.group(1), m.group(2))
         return name, attr
 
-def deny_if_any_non_namespace_members(caller, ldap, dn, candidates, rejects,
-                                      *keys, **options):
+def deny_if_any_non_namespace_members(caller, ldap, dn, candidates, rejects, *keys, **options):
     """
     This function is a pre-callback for OpenIPA's LDAPAddMember operations. It
     filters members for hostgroups, Sudo rules, and HBAC rules to enforce
