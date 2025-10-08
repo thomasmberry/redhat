@@ -1,0 +1,34 @@
+Prerequistes:
+- checkit.pl and resulting ipa commands must be run on an IPA enrolled host
+
+provisioning/rbac/checkit.pl : provisioning script
+ - provides commands to create new namespace RBAC and associated user and group objects
+ - evaluate existing namespace RBAC; provide commands to perform changes
+
+./checkit.pl -h
+usage:
+     validate all namespace; display only ipa commands
+      : ./checkit.pl 
+
+     validate all namespace; verbose output
+      : ./checkit.pl -t
+
+     validate specific namespace; display only ipa commands
+      : ./checkit.pl -n=acme
+
+     validate specific namespace; display and write ipa commands to acme.sh
+      : ./checkit.pl -n=acme | tee acme.sh
+
+     validate specific namespace; verbose output
+      : ./checkit.pl -n=acme -t
+
+Permission Templates:
+  provisioning/config/admin : namespace admin role
+  provisioning/config/owner : namespace owner role
+  provisioning/config/owner : amespace hostenroll user role used for automating host enrollment
+
+RBAC Modules:
+  provisioning/lib/IDM/RBAC/Common.pm : common functions
+  provisioning/lib/IDM/RBAC/Admin.pm : namespace admin role functions
+  provisioning/lib/IDM/RBAC/Owner.pm : namespace owner role functions
+  provisioning/lib/IDM/RBAC/Hostenroll.pm : namespace owner role functions
