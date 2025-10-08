@@ -1,0 +1,10 @@
+---
+permission:
+  name: "%ucnamespace% Group IPAUSERS Modify"
+  right:
+    - write
+  subtree: "cn=groups,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  filter: "(|(objectclass=ipausergroup)(objectclass=posixgroup))"
+  target: "cn=ipausers,cn=groups,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  attrs:
+    - member

@@ -1,0 +1,29 @@
+---
+permission:
+  name: "%ucnamespace% Sudo Rule Manage"
+  right:
+    - read
+    - search
+    - write
+    - add
+    - delete
+  subtree: "cn=sudo,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  filter: "(&(cn=%namespace%.*)(objectclass=ipasudorule))"
+  target: "cn=sudo,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  attrs:
+    - cmdcategory
+    - description
+    - externalhost
+    - externaluser
+    - hostcategory
+    - ipaenabledflag
+    - ipasudoopt
+    - ipasudorunas
+    - ipasudorunasextuser
+    - ipasudorunasgroupcategory
+    - ipasudorunasusercategory
+    - memberallowcmd
+    - memberhost
+    - memberuser
+    - sudoorder
+    - usercategory

@@ -1,0 +1,22 @@
+---
+permission:
+  name: "%ucnamespace% ID Override Manage Namespace"
+  right: 
+    - read
+    - search
+    - write
+    - add
+    - delete
+  subtree: "cn=views,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  filter: "(&(ipaanchoruuid=*)(|(objectclass=ipauseroverride)(objectclass=ipagroupoverride)))"
+  target: "cn=%namespace%,cn=views,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  attrs:
+    - cn
+    - description
+    - gidnumber
+    - homedirectory
+    - ipaanchoruuid
+    - loginshell
+    - member
+    - uid
+    - uidnumber

@@ -1,0 +1,12 @@
+---
+permission:
+  name: "%ucnamespace% ID View Manage Namespace"
+  right:
+    - read
+    - search
+    - write
+  subtree: "cn=views,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  target: "cn=%namespace%,cn=views,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  attrs:
+    - cn
+    - description

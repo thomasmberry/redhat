@@ -1,0 +1,24 @@
+---
+permission:
+  name: "%ucnamespace% Netgroups Manage"
+  right:
+    - read
+    - search
+    - write
+    - add
+    - delete
+  subtree: "cn=ng,cn=alt,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  filter: "(&(cn=%namespace%.*)(objectclass=ipanisnetgroup))"
+  target: "ipauniqueid=*,cn=ng,cn=alt,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  attrs:
+    - cn
+    - createtimestamp
+    - description
+    - entryusn
+    - hostcategory
+    - ipauniqueid
+    - modifytimestamp
+    - nisdomainname
+    - nisnetgrouptriple
+    - objectclass
+    - usercategory

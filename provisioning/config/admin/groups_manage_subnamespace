@@ -1,0 +1,25 @@
+---
+permission:
+  name: "%ucnamespace% Groups Manage SubNamespace"
+  right:
+    - read
+    - search
+    - write
+    - add
+    - delete
+  subtree: "cn=groups,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  target: "cn=%namespace%.*,cn=groups,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  attrs:
+    - cn
+    - createtimestamp
+    - description
+    - entryusn
+    - gidnumber
+    - ipauniqueid
+    - member
+    - membermanager
+    - mepmanagedby
+    - mepmanagedentry
+    - modifytimestamp
+    - objectclass
+

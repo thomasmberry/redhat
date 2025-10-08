@@ -1,0 +1,20 @@
+---
+permission:
+  name: "%ucnamespace% HBAC Rule Manage"
+  right:
+    - read
+    - search
+    - write
+    - add
+    - delete
+  subtree: "cn=hbac,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  filter: "(&(cn=%namespace%.*)(objectclass=ipahbacrule))"
+  target: "ipauniqueid=*,cn=hbac,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  attrs:
+    - cn
+    - description
+    - gidnumber
+    - ipaenabledflag
+    - memberuser
+    - memberhost
+    - memberservice
