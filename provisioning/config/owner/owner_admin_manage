@@ -5,7 +5,7 @@ permission:
     - read
     - write
   subtree: "cn=groups,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
-  filter: "(&(|(cn=%group_owner%)(cn=%group_admin%}))(objectclass=ipausergroup))"
+  filter: "(&(|(cn=%group_owner%)(cn=%group_admin%))(objectclass=ipausergroup))"
   target: "cn=groups,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
   attrs:
     - member
