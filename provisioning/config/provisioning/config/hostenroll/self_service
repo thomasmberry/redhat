@@ -1,0 +1,27 @@
+---
+permission:
+  name: "%uchostenroll% Self Service"
+  right:
+    - read
+    - write
+  subtree: "cn=users,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  filter: "(&(uid=%hostenroll%)(class=nonperson)(objectclass=posixaccount))"
+  target: "cn=users,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  attrs:
+    - cn
+    - createtimestamp
+    - displayname
+    - entryusn
+    - gecos
+    - homedirectory
+    - ipacertmapdata
+    - ipasshpubkey
+    - ipauserauthtype
+    - krbprincipalaliases
+    - loginshell
+    - modifytimestamp
+    - objectclass
+    - sn
+    - usercertificate
+    - userclass
+    - userpassword

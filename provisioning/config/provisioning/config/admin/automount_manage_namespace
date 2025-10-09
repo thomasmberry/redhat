@@ -1,0 +1,21 @@
+---
+permission:
+  name: "%ucnamespace% Automount Manage Namespace"
+  right:
+    - read
+    - search
+    - write
+    - add
+    - delete
+  subtree: "cn=automount,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  target: "cn=%namespace%,cn=automount,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  attrs:
+    - automountinformation
+    - automountkey
+    - automountmapname
+    - cn
+    - createtimestamp
+    - description
+    - entryusn
+    - modifytimestamp
+    - objectclass

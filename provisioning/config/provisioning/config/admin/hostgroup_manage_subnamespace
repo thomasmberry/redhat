@@ -1,0 +1,15 @@
+---
+permission:
+  name: "%ucnamespace% Hostgroup Manage SubNamespace"
+  right:
+    - read
+    - search
+    - write
+    - add
+    - delete
+  subtree: "cn=hostgroups,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  target: "cn=%namespace%.*,cn=hostgroups,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  attrs:
+    - cn
+    - description
+    - member

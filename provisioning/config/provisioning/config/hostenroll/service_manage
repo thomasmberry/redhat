@@ -1,0 +1,24 @@
+---
+permission:
+  name: "%uchostenroll% Service Manage"
+  right:
+    - read
+    - search
+    - compare
+    - write
+    - add
+    - delete
+  subtree: "cn=services,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  filter: "(&(|(!(ipaAllowedToPerform=*))(ipaAllowedToPerform=uid=%hostenroll%,*)))"
+  target: "cn=services,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  attrs:
+    - createtimestamp
+    - entryusn
+    - ipaallowedtoperform
+    - ipakrbprincipalalias
+    - krbextradata
+    - krblastpwdchange
+    - krbprincipalkey
+    - krbprincipalname
+    - modifytimestamp
+    - objectclass

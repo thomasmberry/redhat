@@ -1,0 +1,16 @@
+---
+permission:
+  name: "%ucnamespace% Sudo Commands Group Manage"
+  right:
+    - read
+    - search
+    - write
+    - add
+    - delete
+  subtree: "cn=sudocmdgroups,cn=sudo,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  filter: "(&(cn=%namespace%.*)(objectclass=ipasudocmdgrp))"
+  target: "cn=sudocmdgroups,cn=sudo,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  attrs:
+    - description
+    - member
+

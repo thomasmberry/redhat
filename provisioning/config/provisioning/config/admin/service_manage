@@ -1,0 +1,23 @@
+---
+permission:
+  name: "%ucnamespace% Service Manage"
+  right:
+    - read
+    - search
+    - write
+    - add
+    - delete
+  subtree: "cn=services,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  filter: "(&(!(krbprincipalname=*/icam-*))(|(!(ipaAllowedToPerform=*))(ipaAllowedToPerform=cn=%group_admin%,*)))"
+  target: "krbprincipalname=*,cn=services,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  attrs:
+    - createtimestamp
+    - entryusn
+    - ipaallowedtoperform
+    - ipakrbprincipalalias
+    - krbextradata
+    - krblastpwdchange
+    - krbprincipalkey
+    - krbprincipalname
+    - modifytimestamp
+    - objectclass

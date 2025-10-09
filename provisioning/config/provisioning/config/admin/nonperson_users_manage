@@ -1,0 +1,31 @@
+---
+permission:
+  name: "%ucnamespace% NONPERSON Users Manage"
+  right:
+    - read
+    - search
+    - write
+    - add
+    - delete
+  subtree: "cn=users,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  target: "uid=%namespace%.*,cn=users,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  attrs:
+    - cn
+    - createtimestamp
+    - displayname
+    - entryusn
+    - gecos
+    - gidnumber
+    - givenname
+    - homedirectory
+    - ipasshpubkey
+    - ipauserauthtype
+    - loginshell
+    - mepmanagedentry
+    - modifytimestamp
+    - objectclass
+    - sn
+    - uid
+    - uidnumber
+    - userclass
+    - userpassword

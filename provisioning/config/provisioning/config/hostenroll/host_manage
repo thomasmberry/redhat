@@ -1,0 +1,36 @@
+---
+permission:
+  name: "%uchostenroll% Host Manage"
+  right:
+    - read
+    - search
+    - compare
+    - write
+    - add
+    - delete
+  subtree: "cn=computers,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  filter: "(&(|(!(userclass=*))(userclass=%namespace%)(userclass=%namespace%.*))(objectclass=ipahost))"
+  target: "cn=computers,cn=accounts,dc=%shortdomainname%,dc=jpl,dc=nasa,dc=gov"
+  attrs:
+    - createtimestamp
+    - description
+    - enrolledby
+    - entryusn
+    - fqdn
+    - ipaallowedtoperform\;read_keys
+    - ipaallowedtoperform\;write_keys
+    - ipaassignedidview
+    - ipaprotectedoperation\;write_keys
+    - ipasshpubkey
+    - krbcanonicalname
+    - krblastpwdchange
+    - krbprincipalkey
+    - krbprincipalname
+    - modifytimestamp
+    - nshardwareplatform
+    - nshostlocation
+    - nsosversion
+    - objectclass
+    - usercertificate
+    - userclass
+    - userpassword
