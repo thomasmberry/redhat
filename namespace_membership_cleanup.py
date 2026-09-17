@@ -17,7 +17,7 @@ entirely -- a gap FreeIPA's own automember-rebuild command and the
 underlying 389-ds automember plugin both leave open.
 """
 
-log_prefix = "jpl.NamespaceMembershipCleanup -"
+log_prefix = "log.NamespaceMembershipCleanup -"
 
 
 def detect_userclass_change_pre(self, ldap, dn, entry_attrs, attrs_list,
@@ -42,7 +42,7 @@ def detect_userclass_change_pre(self, ldap, dn, entry_attrs, attrs_list,
             old_userclass = set()
         new_userclass = set(entry_attrs.get('userclass') or [])
         if old_userclass != new_userclass:
-            setattr(context, 'jpl_automember_cleanup_host_dn', dn)
+            setattr(context, 'automember_cleanup_host_dn', dn)
     return dn
 
 
@@ -58,10 +58,10 @@ def submit_cleanup_task_post(self, ldap, dn, entry_attrs, *keys, **options):
     userclass change (or a manual automember-rebuild) gets another
     chance.
     """
-    host_dn = getattr(context, 'jpl_automember_cleanup_host_dn', None)
+    host_dn = getattr(context, 'automember_cleanup_host_dn', None)
     if host_dn is None:
         return dn
-    delattr(context, 'jpl_automember_cleanup_host_dn')
+    delattr(context, 'automember_cleanup_host_dn')
 
     task_cn = str(uuid.uuid4())
     task_dn = DN(('cn', task_cn), REBUILD_TASK_CONTAINER)
