@@ -1,0 +1,17 @@
+  namespace_membership_cleanup.py plugin is now available
+  - closes a gap left by FreeIPA's automember-rebuild command and the underlying 389-ds automember plugin: a host
+  whose userclass changes (or is removed) is not automatically removed from its OLD namespace hostgroup unless the
+  same modify also causes an ADD to a different target group
+  - registers pre/post callbacks on host-mod: PRE detects a real userclass change and stashes the host's DN; POST
+  (after the modify commits) submits a scoped automember-rebuild task (cleanup: yes) for that one host only
+  - never triggers a domain-wide resync -- a manual `ipa automember-rebuild` (or a hand-built cleanup task) remains
+  the only way to do a subtree-wide sweep
+
+  IPA server install procedure
+  - chmod 644 namespace_membership_cleanup.py
+  - chown root:root namespace_membership_cleanup.py
+  - systemctl stop ipa
+  - cp -p namespace_membership_cleanup.py /usr/lib/python3.6/site-packages/ipaserver/plugins/
+  - restorecon -v /usr/lib/python3.6/site-packages/ipaserver/plugins/namespace_membership_cleanup.py
+  - systemctl start ipa
+  - ipactl status
