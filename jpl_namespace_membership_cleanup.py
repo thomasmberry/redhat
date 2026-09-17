@@ -15,52 +15,6 @@ Automatically removes a host from its OLD namespace hostgroup when its
 userclass attribute changes to a different namespace, or is removed
 entirely -- a gap FreeIPA's own automember-rebuild command and the
 underlying 389-ds automember plugin both leave open.
-
-Background: FreeIPA/D4L's namespace convention gives each namespace a
-hostgroup of the same name, populated via an automember rule matching
-hosts whose userclass equals the namespace or starts with
-"<namespace>.". The 389-ds automember plugin's real-time modify hook
-(automember_mod_post_op(), in ldap/servers/plugins/automember/
-automember.c) is ADD-ONLY for this case: it only performs cross-group
-membership cleanup as a side effect of the SAME modify ALSO causing an
-ADD to a DIFFERENT target group. A plain userclass change or removal,
-with no simultaneous add elsewhere, never triggers that cleanup path --
-so a host silently remains a member of its old namespace hostgroup
-forever, until someone notices and fixes it by hand.
-
-Confirmed empirically (sbx-idm, 2026-09-11) that no automember RULE
-configuration can work around this -- not an exclusive condition on
-the old rule, not a dedicated default/fallback hostgroup for
-"no namespace matched" hosts. Both were built and tested live; neither
-causes real cross-rule removal, because the 389-ds cleanup logic that
-an ADD triggers only ever diffs the SAME rule's own before/after
-target list, never a different rule's separately-tracked membership.
-
-The only mechanism that performs genuine cross-rule membership cleanup
-is a `cn=automember rebuild membership,cn=tasks,cn=config` task entry
-with `cleanup: yes` set -- the exact task type `ipa automember-rebuild`
-already creates (see ipaserver/plugins/automember.py's
-automember_rebuild.execute(), which calls ldap.make_entry()/
-ldap.add_entry() against this same REBUILD_TASK_CONTAINER) -- but that
-command never exposes the `cleanup` attribute, so this has to be
-submitted directly rather than via the ipa CLI/API's own rebuild
-command.
-
-This plugin closes that gap for the one case D4L actually needs it
-for: a host's own userclass changing on host-mod. It uses the same
-register_post_callback mechanism as jpl_namespace_membership_policy.py
-(FreeIPA's own documented plugin-extension API, doc/guide/guide.org's
-"Extending existing method" section) rather than modifying any vendor
-file -- host_mod's real behavior is untouched; this callback only ever
-runs AFTER a host-mod has already committed successfully.
-
-Deliberately scoped to exactly ONE host per submitted task
-(scope: base, basedn = that host's own DN) -- this plugin NEVER
-submits a subtree-wide sweep. A domain-wide resync is a separate,
-deliberate, operator-initiated action (a manual `ipa automember-rebuild`
-run, or a hand-built cleanup task per debug/
-automember-cleanup-rebuild-procedure.md), not something a single
-host-mod should ever trigger as a side effect.
 """
 
 log_prefix = "jpl.NamespaceMembershipCleanup -"
