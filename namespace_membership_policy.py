@@ -24,13 +24,13 @@ class DenyIneligibleMembers(object):
     for this filtering is encapsulated within this class (DenyIneligibleMembers).
 
     Essentially, the code ensures that if a target group or rule belongs to a
-    specific namespace (e.g., 'jpl.hostgroup'), only members from that same
+    specific namespace (e.g., 'gen.hostgroup'), only members from that same
     namespace are permitted. Exceptions are made for certain hostnames (starting
     with 'icam' or 'ips') and for hostgroups whose names match the target's
     namespace.
     """
 
-    log_prefix = "jpl.DenyIneligibleMembers -"
+    log_prefix = "log.DenyIneligibleMembers -"
 
     def __init__(self, ldap, tgt_dn, cands, rejects):
         assert isinstance(tgt_dn, DN)
